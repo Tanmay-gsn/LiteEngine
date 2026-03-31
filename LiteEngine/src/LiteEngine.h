@@ -11,6 +11,7 @@
 #include "LiteEngine/Input.h"
 #include "LiteEngine/KeyCodes.h"
 #include "LiteEngine/MouseButtonCodes.h"
+#include "LiteEngine/OrthographicCameraController.h"
 
 #include "LiteEngine/ImGui/ImGuiLayer.h"
 
@@ -28,4 +29,4 @@
 
 // Entry point
 #include "LiteEngine/EntryPoint.h"
-//-------------------
+//----------------------
