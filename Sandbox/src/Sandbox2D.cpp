@@ -2,7 +2,6 @@
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Platform/OpenGL/OpenGLShader.h"
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"), m_CameraController(1280.0f / 720.0f)
@@ -11,6 +10,7 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
+	m_CheckerboardTexture = LiteEngine::Texture2D::Create("assets/textures/Checkerboard.png");
 }
 
 void Sandbox2D::OnDetach()
@@ -23,8 +23,13 @@ void Sandbox2D::OnUpdate(LiteEngine::Timestep ts)
 	m_CameraController.OnUpdate(ts);
 
 	// Render
+	LiteEngine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+	LiteEngine::RenderCommand::Clear();
+
 	LiteEngine::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	LiteEngine::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+	LiteEngine::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+	LiteEngine::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
+	LiteEngine::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, m_CheckerboardTexture);
 	LiteEngine::Renderer2D::EndScene();
 }
 
