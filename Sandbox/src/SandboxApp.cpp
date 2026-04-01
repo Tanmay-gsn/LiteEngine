@@ -135,7 +135,7 @@ public:
 		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
 		m_Texture = LiteEngine::Texture2D::Create("assets/textures/Checkerboard.png");
-		m_ChernoLogoTexture = LiteEngine::Texture2D::Create("assets/textures/ChernoLogo.png");
+		m_ChernoLogoTexture = LiteEngine::Texture2D::Create("assets/textures/LE_Logo.png");
 
 		std::dynamic_pointer_cast<LiteEngine::OpenGLShader>(textureShader)->Bind();
 		std::dynamic_pointer_cast<LiteEngine::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
@@ -157,7 +157,7 @@ public:
 		std::dynamic_pointer_cast<LiteEngine::OpenGLShader>(m_FlatColorShader)->Bind();
 		std::dynamic_pointer_cast<LiteEngine::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
 
-		for (int y = 0; y < 20; y++)
+		for (int y = 0; y < 10; y++)
 		{
 			for (int x = 0; x < 20; x++)
 			{
@@ -170,9 +170,14 @@ public:
 		auto textureShader = m_ShaderLibrary.Get("Texture");
 
 		m_Texture->Bind();
-		LiteEngine::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		glm::mat4 checkerTransform = glm::translate(glm::mat4(1.0f), glm::vec3(-1.5f, 0.0f, 0.0f))
+			* glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
+		LiteEngine::Renderer::Submit(textureShader, m_SquareVA, checkerTransform);
+
 		m_ChernoLogoTexture->Bind();
-		LiteEngine::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		glm::mat4 logoTransform = glm::translate(glm::mat4(1.0f), glm::vec3(-1.5f, 0.0f, 0.0f))
+			* glm::scale(glm::mat4(1.0f), glm::vec3(1.5f, 1.5f / 1.329f, 1.0f));
+		LiteEngine::Renderer::Submit(textureShader, m_SquareVA, logoTransform);
 
 		// Triangle
 		// LiteEngine::Renderer::Submit(m_Shader, m_VertexArray);

@@ -3,16 +3,31 @@
 
 #include "stb_image.h"
 #include <glad/glad.h>
+#include <filesystem>
 
 namespace LiteEngine {
 
     OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
         : m_Path(path)
     {
-        int width, height, channels;
+        int width = 0, height = 0, channels = 0;
         stbi_set_flip_vertically_on_load(1);
-        stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-        LE_CORE_ASSERT(data, "Failed to load image!");
+
+
+        std::filesystem::path filePath = std::filesystem::absolute(path);
+        if (!std::filesystem::exists(filePath))
+        {
+            LE_CORE_ERROR("Texture file not found: {0}", filePath.string());
+            LE_CORE_ASSERT(false, "Texture file not found!");
+        }
+
+        stbi_uc* data = stbi_load(filePath.string().c_str(), &width, &height, &channels, 0);
+        if (!data)
+        {
+            LE_CORE_ERROR("stbi_load failed for {0}: {1}", filePath.string(), stbi_failure_reason());
+            LE_CORE_ASSERT(false, "Failed to load image!");
+        }
+
         m_Width = width;
         m_Height = height;
 
