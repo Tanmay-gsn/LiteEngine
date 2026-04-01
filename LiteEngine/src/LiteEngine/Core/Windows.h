@@ -2,7 +2,7 @@
 
 #include "hzpch.h"
 
-#include "LiteEngine/Core.h"
+#include "LiteEngine/Core/Core.h"
 #include "LiteEngine/Events/Event.h"
 
 namespace LiteEngine {

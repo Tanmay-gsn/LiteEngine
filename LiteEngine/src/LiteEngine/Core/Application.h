@@ -3,7 +3,7 @@
 #include "Core.h"
 
 #include "Windows.h"
-#include "LiteEngine/LayerStack.h"
+#include "LiteEngine/Core/LayerStack.h"
 #include "LiteEngine/Events/Event.h"
 #include "LiteEngine/Events/ApplicationEvent.h"
 

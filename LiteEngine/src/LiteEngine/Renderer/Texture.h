@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "LiteEngine/Core.h"
+#include "LiteEngine/Core/Core.h"
 
 namespace LiteEngine {
 

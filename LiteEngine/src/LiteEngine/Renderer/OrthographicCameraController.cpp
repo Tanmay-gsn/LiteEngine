@@ -1,8 +1,8 @@
 #include "hzpch.h"
 #include "OrthographicCameraController.h"
 
-#include "LiteEngine/Input.h"
-#include "LiteEngine/KeyCodes.h"
+#include "LiteEngine/Core/Input.h"
+#include "LiteEngine/Core/KeyCodes.h"
 
 namespace LiteEngine {
 

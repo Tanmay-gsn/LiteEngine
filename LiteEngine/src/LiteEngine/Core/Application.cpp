@@ -1,7 +1,7 @@
 ﻿#include "hzpch.h"
 #include "Application.h"
 
-#include "LiteEngine/Log.h"
+#include "LiteEngine/Core/Log.h"
 
 #include "LiteEngine/Renderer/Renderer.h"
 #include "imgui.h"

@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "hzpch.h"
-#include "LiteEngine/Core.h"
+#include "LiteEngine/Core/Core.h"
 
 // Make sure spdlog can use operator<< for custom types
 #include "spdlog/fmt/ostr.h"

@@ -2,16 +2,16 @@
 
 // For use by LiteEngine applications
 
-#include "LiteEngine/Application.h"
-#include "LiteEngine/Layer.h"
-#include "LiteEngine/Log.h"
+#include "LiteEngine/Core/Application.h"
+#include "LiteEngine/Core/Layer.h"
+#include "LiteEngine/Core/Log.h"
 
 #include "LiteEngine/Core/Timestep.h"
 
-#include "LiteEngine/Input.h"
-#include "LiteEngine/KeyCodes.h"
-#include "LiteEngine/MouseButtonCodes.h"
-#include "LiteEngine/OrthographicCameraController.h"
+#include "LiteEngine/Core/Input.h"
+#include "LiteEngine/Core/KeyCodes.h"
+#include "LiteEngine/Core/MouseButtonCodes.h"
+#include "LiteEngine/Renderer/OrthographicCameraController.h"
 
 #include "LiteEngine/ImGui/ImGuiLayer.h"
 
@@ -28,5 +28,5 @@
 // ------------------------------------
 
 // Entry point
-#include "LiteEngine/EntryPoint.h"
+#include "LiteEngine/Core/EntryPoint.h"
 //----------------------

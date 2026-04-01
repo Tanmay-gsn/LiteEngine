@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "LiteEngine/Events/Event.h"
-#include "LiteEngine/Log.h"
+#include "LiteEngine/Core/Log.h"
 #include "spdlog/fmt/ostr.h"
 
 // Force discrete GPU

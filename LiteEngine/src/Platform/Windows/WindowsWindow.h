@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LiteEngine/Windows.h"
+#include "LiteEngine/Core/Windows.h"
 #include "LiteEngine/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>

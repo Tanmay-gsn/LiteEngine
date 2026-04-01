@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LiteEngine/Core.h"
+#include "LiteEngine/Core/Core.h"
 
 namespace LiteEngine {
 

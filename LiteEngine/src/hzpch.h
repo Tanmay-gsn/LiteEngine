@@ -13,7 +13,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "LiteEngine/Log.h"
+#include "LiteEngine/Core/Log.h"
 
 #ifdef LE_PLATFORM_WINDOWS
 	#include <windows.h>

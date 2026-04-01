@@ -1,7 +1,7 @@
 #include "hzpch.h"
 #include "WindowsInput.h"
 
-#include "LiteEngine/Application.h"
+#include "LiteEngine/Core/Application.h"
 #include <GLFW/glfw3.h>
 
 namespace LiteEngine {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LiteEngine/Input.h"
+#include "LiteEngine/Core/Input.h"
 
 namespace LiteEngine {
 	class WindowsInput : public Input
