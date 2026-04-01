@@ -17,6 +17,7 @@
 
 // ---Renderer-------------------------
 #include "LiteEngine/Renderer/Renderer.h"
+#include "LiteEngine/Renderer/Renderer2D.h"
 #include "LiteEngine/Renderer/RenderCommand.h"
 
 #include "LiteEngine/Renderer/Buffer.h"

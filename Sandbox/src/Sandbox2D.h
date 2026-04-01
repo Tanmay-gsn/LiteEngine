@@ -18,7 +18,5 @@ private:
 	LiteEngine::OrthographicCameraController m_CameraController;
 
 	// Temp
-	LiteEngine::Ref<LiteEngine::VertexArray> m_SquareVA;
-	LiteEngine::Ref<LiteEngine::Shader> m_FlatColorShader;
 	glm::vec4 m_SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 };
