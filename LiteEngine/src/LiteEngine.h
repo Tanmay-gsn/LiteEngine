@@ -26,7 +26,3 @@
 
 #include "LiteEngine/Renderer/OrthographicCamera.h"
 // ------------------------------------
-
-// Entry point
-#include "LiteEngine/Core/EntryPoint.h"
-//----------------------

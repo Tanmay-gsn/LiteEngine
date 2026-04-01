@@ -1,4 +1,5 @@
 #include "LiteEngine.h"
+#include "LiteEngine/Core/EntryPoint.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -6,7 +7,7 @@
 #include "LiteEngine/Events/Event.h"
 #include "LiteEngine/Core/Log.h"
 #include "spdlog/fmt/ostr.h"
-
+#include "Sandbox2D.h"
 // Force discrete GPU
 extern "C" {
 	__declspec(dllexport) unsigned long NvOptimusEnablement = 1;
@@ -18,7 +19,7 @@ public:
 	ExampleLayer()
 		: Layer("Example"), m_CameraController(1280.0f / 720.0f)
 	{
-		m_VertexArray.reset(LiteEngine::VertexArray::Create());
+		m_VertexArray = LiteEngine::VertexArray::Create();
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -40,7 +41,7 @@ public:
 		indexBuffer.reset(LiteEngine::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
-		m_SquareVA.reset(LiteEngine::VertexArray::Create());
+		m_SquareVA = LiteEngine::VertexArray::Create();
 		float squareVertices[5 * 4] = {
 					-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
 					 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
@@ -215,7 +216,7 @@ class Sandbox : public LiteEngine::Application {
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer());
+		PushLayer(new Sandbox2D());
 	}
 
 	~Sandbox() {}
