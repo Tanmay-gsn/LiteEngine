@@ -14,6 +14,7 @@ namespace LiteEngine {
 		Ref<VertexArray> QuadVertexArray;
 		Ref<Shader> FlatColorShader;
 		Ref<Shader> TextureShader;
+		glm::mat4 CameraViewProjection;
 	};
 
 	static Renderer2DStorage* s_Data;
@@ -56,11 +57,13 @@ namespace LiteEngine {
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
+		s_Data->CameraViewProjection = camera.GetViewProjectionMatrix();
+
 		s_Data->FlatColorShader->Bind();
-		s_Data->FlatColorShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+		s_Data->FlatColorShader->SetMat4("u_ViewProjection", s_Data->CameraViewProjection);
 
 		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+		s_Data->TextureShader->SetMat4("u_ViewProjection", s_Data->CameraViewProjection);
 	}
 
 	void Renderer2D::EndScene()
@@ -93,6 +96,7 @@ namespace LiteEngine {
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
 	{
 		s_Data->TextureShader->Bind();
+		s_Data->TextureShader->SetMat4("u_ViewProjection", s_Data->CameraViewProjection);
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
