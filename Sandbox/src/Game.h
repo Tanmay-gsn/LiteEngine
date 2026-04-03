@@ -10,6 +10,14 @@ const float     PLAYER_VELOCITY(500.0f);
 const glm::vec2 INITIAL_BALL_VELOCITY(100.0f, -350.0f);
 const float     BALL_RADIUS = 12.5f;
 
+enum Direction {
+    UP,
+    RIGHT,
+    DOWN,
+    LEFT
+};
+
+typedef std::tuple<bool, Direction, glm::vec2> Collision;
 enum GameState {
     GAME_ACTIVE,
     GAME_MENU,
@@ -32,4 +40,6 @@ public:
     void Update(float dt);
     void Render();
     void DoCollisions();
+    void ResetLevel();
+    void ResetPlayer();
 };

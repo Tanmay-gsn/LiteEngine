@@ -71,6 +71,29 @@ void Game::ProcessInput(float dt)
             Ball->Stuck = false;
     }
 }
+
+Direction VectorDirection(glm::vec2 target)
+{
+    glm::vec2 compass[] = {
+        glm::vec2(0.0f,  1.0f),
+        glm::vec2(1.0f,  0.0f),
+        glm::vec2(0.0f, -1.0f),
+        glm::vec2(-1.0f, 0.0f)
+    };
+    float max = 0.0f;
+    unsigned int best_match = -1;
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        float dot_product = glm::dot(glm::normalize(target), compass[i]);
+        if (dot_product > max)
+        {
+            max = dot_product;
+            best_match = i;
+        }
+    }
+    return (Direction)best_match;
+}
+
 bool CheckCollision(GameObject& one, GameObject& two)
 {
     bool collisionX = one.Position.x + one.Size.x >= two.Position.x &&
@@ -80,7 +103,7 @@ bool CheckCollision(GameObject& one, GameObject& two)
     return collisionX && collisionY;
 }
 
-bool CheckCollision(BallObject& one, GameObject& two)
+Collision CheckCollision(BallObject& one, GameObject& two)
 {
     glm::vec2 center(one.Position + one.Radius);
     glm::vec2 aabb_half_extents(two.Size.x / 2.0f, two.Size.y / 2.0f);
@@ -92,7 +115,10 @@ bool CheckCollision(BallObject& one, GameObject& two)
     glm::vec2 clamped = glm::clamp(difference, -aabb_half_extents, aabb_half_extents);
     glm::vec2 closest = aabb_center + clamped;
     difference = closest - center;
-    return glm::length(difference) < one.Radius;
+    if (glm::length(difference) <= one.Radius)
+        return std::make_tuple(true, VectorDirection(difference), difference);
+    else
+        return std::make_tuple(false, UP, glm::vec2(0.0f, 0.0f));
 }
 
 void Game::DoCollisions()
@@ -101,19 +127,83 @@ void Game::DoCollisions()
     {
         if (!box.Destroyed)
         {
-            if (CheckCollision(*Ball, box))
+            Collision collision = CheckCollision(*Ball, box);
+            if (std::get<0>(collision))
             {
                 if (!box.IsSolid)
                     box.Destroyed = true;
+                Direction dir = std::get<1>(collision);
+                glm::vec2 diff_vector = std::get<2>(collision);
+                if (dir == LEFT || dir == RIGHT)
+                {
+                    Ball->Velocity.x = -Ball->Velocity.x;
+                    float penetration = Ball->Radius - std::abs(diff_vector.x);
+                    if (dir == LEFT)
+                        Ball->Position.x += penetration;
+                    else
+                        Ball->Position.x -= penetration;
+                }
+                else
+                {
+                    Ball->Velocity.y = -Ball->Velocity.y;
+                    float penetration = Ball->Radius - std::abs(diff_vector.y);
+                    if (dir == UP)
+                        Ball->Position.y -= penetration;
+                    else
+                        Ball->Position.y += penetration;
+                }
             }
         }
     }
+
+    Collision result = CheckCollision(*Ball, *Player);
+    if (!Ball->Stuck && std::get<0>(result))
+    {
+        float centerBoard = Player->Position.x + Player->Size.x / 2.0f;
+        float distance = (Ball->Position.x + Ball->Radius) - centerBoard;
+        float percentage = distance / (Player->Size.x / 2.0f);
+        float strength = 2.0f;
+        glm::vec2 oldVelocity = Ball->Velocity;
+        Ball->Velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
+        Ball->Velocity.y = -1.0f * std::abs(Ball->Velocity.y);
+        Ball->Velocity = glm::normalize(Ball->Velocity) * glm::length(oldVelocity);
+    }
+}
+
+void Game::ResetLevel()
+{
+    if (this->Level == 0)
+        this->Levels[0].Load("assets/levels/one.lvl", this->Width, this->Height / 2);
+    else if (this->Level == 1)
+        this->Levels[1].Load("assets/levels/two.lvl", this->Width, this->Height / 2);
+    else if (this->Level == 2)
+        this->Levels[2].Load("assets/levels/three.lvl", this->Width, this->Height / 2);
+    else if (this->Level == 3)
+        this->Levels[3].Load("assets/levels/four.lvl", this->Width, this->Height / 2);
+}
+
+void Game::ResetPlayer()
+{
+    Player->Size = PLAYER_SIZE;
+    Player->Position = glm::vec2(
+        this->Width / 2.0f - PLAYER_SIZE.x / 2.0f,
+        this->Height - PLAYER_SIZE.y
+    );
+    Ball->Reset(
+        Player->Position + glm::vec2(PLAYER_SIZE.x / 2.0f - BALL_RADIUS, -BALL_RADIUS * 2.0f),
+        INITIAL_BALL_VELOCITY
+    );
 }
 
 void Game::Update(float dt)
 {
     Ball->Move(dt, this->Width);
     this->DoCollisions();
+    if (Ball->Position.y >= this->Height)
+    {
+        this->ResetLevel();
+        this->ResetPlayer();
+    }
 }
 
 void Game::Render()
