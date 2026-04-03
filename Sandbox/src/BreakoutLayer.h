@@ -14,4 +14,5 @@ public:
 
 private:
     Game m_Game;
+    LiteEngine::OrthographicCamera m_Camera;
 };

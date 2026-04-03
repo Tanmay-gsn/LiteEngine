@@ -11,7 +11,7 @@ namespace LiteEngine {
         : m_Path(path)
     {
         int width = 0, height = 0, channels = 0;
-        stbi_set_flip_vertically_on_load(1);
+        stbi_set_flip_vertically_on_load(0);
 
         std::filesystem::path filePath = std::filesystem::absolute(path);
         if (!std::filesystem::exists(filePath))

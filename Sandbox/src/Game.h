@@ -1,4 +1,6 @@
 #pragma once
+#include "LiteEngine.h"
+#include "ResourceManager.h"
 
 enum GameState {
     GAME_ACTIVE,
