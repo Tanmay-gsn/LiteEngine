@@ -29,8 +29,8 @@ void GameLevel::Load(const char* file, unsigned int levelWidth, unsigned int lev
 void GameLevel::init(std::vector<std::vector<unsigned int>> tileData,
     unsigned int lvlWidth, unsigned int lvlHeight)
 {
-    unsigned int height = tileData.size();
-    unsigned int width = tileData[0].size();
+    unsigned int height = (unsigned int)tileData.size();
+    unsigned int width = (unsigned int)tileData[0].size();
     float unit_width = lvlWidth / static_cast<float>(width);
     float unit_height = lvlHeight / static_cast<float>(height);
 

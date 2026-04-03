@@ -20,9 +20,9 @@ void BreakoutLayer::OnUpdate(LiteEngine::Timestep ts)
 {
     float dt = ts;
 
-    // feed keys
     m_Game.Keys[LE_KEY_A] = LiteEngine::Input::IsKeyPressed(LE_KEY_A);
     m_Game.Keys[LE_KEY_D] = LiteEngine::Input::IsKeyPressed(LE_KEY_D);
+    m_Game.Keys[LE_KEY_SPACE] = LiteEngine::Input::IsKeyPressed(LE_KEY_SPACE);
 
     m_Game.ProcessInput(dt);
     m_Game.Update(dt);

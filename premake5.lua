@@ -39,8 +39,8 @@ project "LiteEngine"
     {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp",
+        "%{prj.name}/vendor/stb_image/**.h",
+        "%{prj.name}/vendor/stb_image/**.cpp",
         "%{prj.name}/vendor/glm/glm/**.hpp",
         "%{prj.name}/vendor/glm/glm/**.inl"
     }
@@ -58,7 +58,7 @@ project "LiteEngine"
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+        "%{IncludeDir.stb_image}"
     }
 
     links
@@ -70,8 +70,6 @@ project "LiteEngine"
         "dwmapi.lib"
     }
 
-    -- LNK4006: __NULL_IMPORT_DESCRIPTOR harmlessly defined in both opengl32.lib
-    -- and dwmapi.lib; suppress with /ignore:4006
     linkoptions { "/ignore:4006" }
 
     filter "system:windows"
@@ -128,8 +126,7 @@ project "Sandbox"
         "LiteEngine"
     }
 
-    -- LNK4006 can also surface at Sandbox link stage
-    linkoptions { "/ignore:4006" }
+    linkoptions { "/ignore:4006", "/NODEFAULTLIB:LIBCMT" }
 
     filter "system:windows"
         systemversion "latest"
