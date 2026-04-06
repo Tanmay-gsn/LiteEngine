@@ -4,6 +4,7 @@
 #include "GameLevel.h"
 #include "GameObject.h"
 #include "BallObject.h"
+#include "PowerUp.h"
 
 const glm::vec2 PLAYER_SIZE(100.0f, 20.0f);
 const float     PLAYER_VELOCITY(500.0f);
@@ -18,6 +19,7 @@ enum Direction {
 };
 
 typedef std::tuple<bool, Direction, glm::vec2> Collision;
+
 enum GameState {
     GAME_ACTIVE,
     GAME_MENU,
@@ -31,6 +33,7 @@ public:
     unsigned int           Width, Height;
     std::vector<GameLevel> Levels;
     unsigned int           Level;
+    std::vector<PowerUp>   PowerUps;  // active / falling power-ups
 
     Game(unsigned int width, unsigned int height);
     ~Game();
@@ -42,4 +45,10 @@ public:
     void DoCollisions();
     void ResetLevel();
     void ResetPlayer();
+
+    // Power-up helpers
+    void SpawnPowerUps(GameObject& block);
+    void UpdatePowerUps(float dt);
+    void ActivatePowerUp(PowerUp& powerUp);
+    bool IsOtherPowerUpActive(std::vector<PowerUp>& powerUps, std::string type);
 };

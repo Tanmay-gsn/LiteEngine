@@ -5,6 +5,8 @@ class BallObject : public GameObject {
 public:
     float Radius;
     bool  Stuck;
+    bool  Sticky;       // Ball sticks to paddle on contact (power-up)
+    bool  PassThrough;  // Ball passes through non-solid bricks (power-up)
 
     BallObject();
     BallObject(glm::vec2 pos, float radius, glm::vec2 velocity,

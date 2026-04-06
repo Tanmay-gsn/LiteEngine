@@ -2,9 +2,24 @@
 #include "Game.h"
 #include "ResourceManager.h"
 #include "LiteEngine/Core/KeyCodes.h"
+#include <cstdlib>   // rand()
 
 GameObject* Player;
 BallObject* Ball;
+
+// -----------------------------------------------------------------------
+// Helpers
+// -----------------------------------------------------------------------
+
+// Returns true ~1-in-chance times
+static bool ShouldSpawn(unsigned int chance)
+{
+    return (rand() % chance) == 0;
+}
+
+// -----------------------------------------------------------------------
+// Constructor / Destructor
+// -----------------------------------------------------------------------
 
 Game::Game(unsigned int width, unsigned int height)
     : State(GAME_ACTIVE), Keys(), Width(width), Height(height), Level(0) {
@@ -12,14 +27,28 @@ Game::Game(unsigned int width, unsigned int height)
 
 Game::~Game() {}
 
+// -----------------------------------------------------------------------
+// Init
+// -----------------------------------------------------------------------
+
 void Game::Init()
 {
+    // Textures
     ResourceManager::LoadTexture("assets/textures/background.jpg", "background");
     ResourceManager::LoadTexture("assets/textures/block.png", "block");
     ResourceManager::LoadTexture("assets/textures/block_solid.png", "block_solid");
     ResourceManager::LoadTexture("assets/textures/paddle.png", "paddle");
     ResourceManager::LoadTexture("assets/textures/ball.png", "ball");
 
+    // Power-up textures  (add these PNGs to assets/textures/)
+    ResourceManager::LoadTexture("assets/textures/powerup_speed.png", "powerup_speed");
+    ResourceManager::LoadTexture("assets/textures/powerup_sticky.png", "powerup_sticky");
+    ResourceManager::LoadTexture("assets/textures/powerup_passthrough.png", "powerup_passthrough");
+    ResourceManager::LoadTexture("assets/textures/powerup_increase.png", "powerup_increase");
+    ResourceManager::LoadTexture("assets/textures/powerup_confuse.png", "powerup_confuse");
+    ResourceManager::LoadTexture("assets/textures/powerup_chaos.png", "powerup_chaos");
+
+    // Levels
     GameLevel one;   one.Load("assets/levels/one.lvl", this->Width, this->Height / 2);
     GameLevel two;   two.Load("assets/levels/two.lvl", this->Width, this->Height / 2);
     GameLevel three; three.Load("assets/levels/three.lvl", this->Width, this->Height / 2);
@@ -30,12 +59,14 @@ void Game::Init()
     this->Levels.push_back(four);
     this->Level = 0;
 
+    // Player
     glm::vec2 playerPos = glm::vec2(
         this->Width / 2.0f - PLAYER_SIZE.x / 2.0f,
         this->Height - PLAYER_SIZE.y
     );
     Player = new GameObject(playerPos, PLAYER_SIZE, ResourceManager::GetTexture("paddle"));
 
+    // Ball
     glm::vec2 ballPos = playerPos + glm::vec2(
         PLAYER_SIZE.x / 2.0f - BALL_RADIUS,
         -BALL_RADIUS * 2.0f
@@ -43,6 +74,10 @@ void Game::Init()
     Ball = new BallObject(ballPos, BALL_RADIUS, INITIAL_BALL_VELOCITY,
         ResourceManager::GetTexture("ball"));
 }
+
+// -----------------------------------------------------------------------
+// ProcessInput
+// -----------------------------------------------------------------------
 
 void Game::ProcessInput(float dt)
 {
@@ -72,13 +107,17 @@ void Game::ProcessInput(float dt)
     }
 }
 
+// -----------------------------------------------------------------------
+// Collision helpers (unchanged from your partner's code)
+// -----------------------------------------------------------------------
+
 Direction VectorDirection(glm::vec2 target)
 {
     glm::vec2 compass[] = {
         glm::vec2(0.0f,  1.0f),
         glm::vec2(1.0f,  0.0f),
         glm::vec2(0.0f, -1.0f),
-        glm::vec2(-1.0f, 0.0f)
+        glm::vec2(-1.0f,  0.0f)
     };
     float max = 0.0f;
     unsigned int best_match = -1;
@@ -121,6 +160,11 @@ Collision CheckCollision(BallObject& one, GameObject& two)
         return std::make_tuple(false, UP, glm::vec2(0.0f, 0.0f));
 }
 
+// -----------------------------------------------------------------------
+// DoCollisions  (updated: brick destruction triggers SpawnPowerUps,
+//                paddle collision respects Sticky, PassThrough skips brick bounce)
+// -----------------------------------------------------------------------
+
 void Game::DoCollisions()
 {
     for (GameObject& box : this->Levels[this->Level].Bricks)
@@ -131,7 +175,15 @@ void Game::DoCollisions()
             if (std::get<0>(collision))
             {
                 if (!box.IsSolid)
+                {
                     box.Destroyed = true;
+                    this->SpawnPowerUps(box);   // <-- NEW
+                }
+
+                // PassThrough: skip bounce for non-solid bricks
+                if (Ball->PassThrough && !box.IsSolid)
+                    continue;                   // <-- NEW
+
                 Direction dir = std::get<1>(collision);
                 glm::vec2 diff_vector = std::get<2>(collision);
                 if (dir == LEFT || dir == RIGHT)
@@ -156,6 +208,7 @@ void Game::DoCollisions()
         }
     }
 
+    // Ball vs paddle
     Collision result = CheckCollision(*Ball, *Player);
     if (!Ball->Stuck && std::get<0>(result))
     {
@@ -167,8 +220,186 @@ void Game::DoCollisions()
         Ball->Velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
         Ball->Velocity.y = -1.0f * std::abs(Ball->Velocity.y);
         Ball->Velocity = glm::normalize(Ball->Velocity) * glm::length(oldVelocity);
+
+        // Sticky: re-attach ball to paddle                          // <-- NEW
+        Ball->Stuck = Ball->Sticky;
+    }
+
+    // Power-up pickups: power-up vs paddle                          // <-- NEW
+    for (PowerUp& powerUp : this->PowerUps)
+    {
+        if (!powerUp.Destroyed)
+        {
+            // Power-up fell below screen — remove it
+            if (powerUp.Position.y >= this->Height)
+                powerUp.Destroyed = true;
+
+            if (CheckCollision(*Player, powerUp))
+            {
+                this->ActivatePowerUp(powerUp);
+                powerUp.Destroyed = true;
+                powerUp.Activated = true;
+            }
+        }
     }
 }
+
+// -----------------------------------------------------------------------
+// SpawnPowerUps
+// -----------------------------------------------------------------------
+
+void Game::SpawnPowerUps(GameObject& block)
+{
+    // Each type has a 1-in-N chance of spawning
+    if (ShouldSpawn(75))
+        this->PowerUps.push_back(
+            PowerUp("speed", glm::vec3(0.5f, 0.5f, 1.0f), 0.0f,
+                block.Position, ResourceManager::GetTexture("powerup_speed")));
+
+    if (ShouldSpawn(75))
+        this->PowerUps.push_back(
+            PowerUp("sticky", glm::vec3(1.0f, 0.5f, 1.0f), 20.0f,
+                block.Position, ResourceManager::GetTexture("powerup_sticky")));
+
+    if (ShouldSpawn(75))
+        this->PowerUps.push_back(
+            PowerUp("pass-through", glm::vec3(0.5f, 1.0f, 0.5f), 10.0f,
+                block.Position, ResourceManager::GetTexture("powerup_passthrough")));
+
+    if (ShouldSpawn(75))
+        this->PowerUps.push_back(
+            PowerUp("pad-size-increase", glm::vec3(1.0f, 0.6f, 0.4f), 0.0f,
+                block.Position, ResourceManager::GetTexture("powerup_increase")));
+
+    // Negative power-ups spawn more frequently
+    if (ShouldSpawn(15))
+        this->PowerUps.push_back(
+            PowerUp("confuse", glm::vec3(1.0f, 0.3f, 0.3f), 15.0f,
+                block.Position, ResourceManager::GetTexture("powerup_confuse")));
+
+    if (ShouldSpawn(15))
+        this->PowerUps.push_back(
+            PowerUp("chaos", glm::vec3(0.9f, 0.25f, 0.25f), 15.0f,
+                block.Position, ResourceManager::GetTexture("powerup_chaos")));
+}
+
+// -----------------------------------------------------------------------
+// ActivatePowerUp
+// -----------------------------------------------------------------------
+
+void Game::ActivatePowerUp(PowerUp& powerUp)
+{
+    if (powerUp.Type == "speed")
+    {
+        Ball->Velocity *= 1.2f;
+    }
+    else if (powerUp.Type == "sticky")
+    {
+        Ball->Sticky = true;
+        Player->Color = glm::vec3(1.0f, 0.5f, 1.0f);
+    }
+    else if (powerUp.Type == "pass-through")
+    {
+        Ball->PassThrough = true;
+        Ball->Color = glm::vec3(1.0f, 0.5f, 0.5f);
+    }
+    else if (powerUp.Type == "pad-size-increase")
+    {
+        Player->Size.x += 50.0f;
+    }
+    else if (powerUp.Type == "confuse")
+    {
+        // No post-processor available — reverse ball X as a substitute effect
+        if (!IsOtherPowerUpActive(this->PowerUps, "confuse"))
+            Ball->Velocity.x = -Ball->Velocity.x;
+    }
+    else if (powerUp.Type == "chaos")
+    {
+        // No post-processor available — randomise ball direction slightly
+        if (!IsOtherPowerUpActive(this->PowerUps, "chaos"))
+        {
+            Ball->Velocity.x *= -1.0f;
+            Ball->Velocity.y *= -1.0f;
+        }
+    }
+}
+
+// -----------------------------------------------------------------------
+// IsOtherPowerUpActive
+// -----------------------------------------------------------------------
+
+bool Game::IsOtherPowerUpActive(std::vector<PowerUp>& powerUps, std::string type)
+{
+    for (const PowerUp& p : powerUps)
+        if (p.Activated && p.Type == type)
+            return true;
+    return false;
+}
+
+// -----------------------------------------------------------------------
+// UpdatePowerUps  — tick durations, deactivate expired ones, move falling ones
+// -----------------------------------------------------------------------
+
+void Game::UpdatePowerUps(float dt)
+{
+    for (PowerUp& powerUp : this->PowerUps)
+    {
+        // Move it down the screen
+        powerUp.Position += powerUp.Velocity * dt;
+
+        if (powerUp.Activated)
+        {
+            powerUp.Duration -= dt;
+
+            if (powerUp.Duration <= 0.0f)
+            {
+                powerUp.Activated = false;
+
+                // Reverse the effect when the power-up expires
+                if (powerUp.Type == "sticky")
+                {
+                    if (!IsOtherPowerUpActive(this->PowerUps, "sticky"))
+                    {
+                        Ball->Sticky = false;
+                        Player->Color = glm::vec3(1.0f);
+                    }
+                }
+                else if (powerUp.Type == "pass-through")
+                {
+                    if (!IsOtherPowerUpActive(this->PowerUps, "pass-through"))
+                    {
+                        Ball->PassThrough = false;
+                        Ball->Color = glm::vec3(1.0f);
+                    }
+                }
+                else if (powerUp.Type == "confuse")
+                {
+                    if (!IsOtherPowerUpActive(this->PowerUps, "confuse"))
+                        Ball->Velocity.x = -Ball->Velocity.x;  // undo reverse
+                }
+                else if (powerUp.Type == "chaos")
+                {
+                    if (!IsOtherPowerUpActive(this->PowerUps, "chaos"))
+                    {
+                        Ball->Velocity.x *= -1.0f;
+                        Ball->Velocity.y *= -1.0f;
+                    }
+                }
+            }
+        }
+    }
+
+    // Remove power-ups that have been collected AND expired, or fallen off screen
+    this->PowerUps.erase(
+        std::remove_if(this->PowerUps.begin(), this->PowerUps.end(),
+            [](const PowerUp& p) { return p.Destroyed && !p.Activated; }),
+        this->PowerUps.end()
+    );
+}
+
+// -----------------------------------------------------------------------
+// ResetLevel / ResetPlayer
+// -----------------------------------------------------------------------
 
 void Game::ResetLevel()
 {
@@ -185,6 +416,7 @@ void Game::ResetLevel()
 void Game::ResetPlayer()
 {
     Player->Size = PLAYER_SIZE;
+    Player->Color = glm::vec3(1.0f);
     Player->Position = glm::vec2(
         this->Width / 2.0f - PLAYER_SIZE.x / 2.0f,
         this->Height - PLAYER_SIZE.y
@@ -193,18 +425,29 @@ void Game::ResetPlayer()
         Player->Position + glm::vec2(PLAYER_SIZE.x / 2.0f - BALL_RADIUS, -BALL_RADIUS * 2.0f),
         INITIAL_BALL_VELOCITY
     );
+    this->PowerUps.clear();  // clear all active power-ups on reset
 }
+
+// -----------------------------------------------------------------------
+// Update
+// -----------------------------------------------------------------------
 
 void Game::Update(float dt)
 {
     Ball->Move(dt, this->Width);
     this->DoCollisions();
+    this->UpdatePowerUps(dt);   // <-- NEW
+
     if (Ball->Position.y >= this->Height)
     {
         this->ResetLevel();
         this->ResetPlayer();
     }
 }
+
+// -----------------------------------------------------------------------
+// Render
+// -----------------------------------------------------------------------
 
 void Game::Render()
 {
@@ -218,5 +461,10 @@ void Game::Render()
         this->Levels[this->Level].Draw();
         Player->Draw();
         Ball->Draw();
+
+        // Draw falling power-ups                                    // <-- NEW
+        for (PowerUp& powerUp : this->PowerUps)
+            if (!powerUp.Destroyed)
+                powerUp.Draw();
     }
 }
