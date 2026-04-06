@@ -15,6 +15,8 @@ IncludeDir["Glad"]  = "LiteEngine/vendor/Glad/include"
 IncludeDir["ImGui"] = "LiteEngine/vendor/imgui"
 IncludeDir["glm"]   = "LiteEngine/vendor/glm"
 IncludeDir["stb_image"] = "LiteEngine/vendor/stb_image"
+IncludeDir["miniaudio"] = "Sandbox/vendor/miniaudio"
+
 
 include "LiteEngine/vendor/GLFW"
 include "LiteEngine/vendor/Glad"
@@ -118,7 +120,9 @@ project "Sandbox"
         "LiteEngine/vendor/spdlog/include",
         "LiteEngine/src",
         "LiteEngine/vendor",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.miniaudio}"
+
     }
 
     links

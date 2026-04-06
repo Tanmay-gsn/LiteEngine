@@ -1,6 +1,7 @@
 #include "hzpch.h"
 #include "Game.h"
 #include "ResourceManager.h"
+#include "AudioManager.h"
 #include "LiteEngine/Core/KeyCodes.h"
 #include <cstdlib>   // rand()
 
@@ -25,7 +26,10 @@ Game::Game(unsigned int width, unsigned int height)
     : State(GAME_ACTIVE), Keys(), Width(width), Height(height), Level(0) {
 }
 
-Game::~Game() {}
+Game::~Game()
+{
+    AudioManager::Shutdown();
+}
 
 // -----------------------------------------------------------------------
 // Init
@@ -48,7 +52,17 @@ void Game::Init()
     ResourceManager::LoadTexture("assets/textures/powerup_confuse.png", "powerup_confuse");
     ResourceManager::LoadTexture("assets/textures/powerup_chaos.png", "powerup_chaos");
 
-    // Levels
+    // Audio
+    AudioManager::Init();
+    AudioManager::LoadSound("assets/audio/breakout.mp3", "music");
+    AudioManager::LoadSound("assets/audio/bleep.mp3", "ball_paddle");
+    AudioManager::LoadSound("assets/audio/bleep.wav", "ball_brick");
+    AudioManager::LoadSound("assets/audio/solid.wav", "ball_solid");
+    AudioManager::LoadSound("assets/audio/powerup.wav", "powerup");
+
+    // Start background music looping
+    AudioManager::SetVolume("music", 0.4f);
+    AudioManager::PlaySound("music", true);
     GameLevel one;   one.Load("assets/levels/one.lvl", this->Width, this->Height / 2);
     GameLevel two;   two.Load("assets/levels/two.lvl", this->Width, this->Height / 2);
     GameLevel three; three.Load("assets/levels/three.lvl", this->Width, this->Height / 2);
@@ -177,7 +191,12 @@ void Game::DoCollisions()
                 if (!box.IsSolid)
                 {
                     box.Destroyed = true;
-                    this->SpawnPowerUps(box);   // <-- NEW
+                    this->SpawnPowerUps(box);   // <-- powerup
+                    AudioManager::PlaySound("ball_brick"); // <-- NEW
+                }
+                else
+                {
+                    AudioManager::PlaySound("ball_solid"); // <-- NEW
                 }
 
                 // PassThrough: skip bounce for non-solid bricks
@@ -221,8 +240,9 @@ void Game::DoCollisions()
         Ball->Velocity.y = -1.0f * std::abs(Ball->Velocity.y);
         Ball->Velocity = glm::normalize(Ball->Velocity) * glm::length(oldVelocity);
 
-        // Sticky: re-attach ball to paddle                          // <-- NEW
+        // Sticky: re-attach ball to paddle                          // <-- powerup
         Ball->Stuck = Ball->Sticky;
+        AudioManager::PlaySound("ball_paddle");                     // <-- NEW
     }
 
     // Power-up pickups: power-up vs paddle                          // <-- NEW
@@ -239,6 +259,7 @@ void Game::DoCollisions()
                 this->ActivatePowerUp(powerUp);
                 powerUp.Destroyed = true;
                 powerUp.Activated = true;
+                AudioManager::PlaySound("powerup");                 // <-- NEW
             }
         }
     }
