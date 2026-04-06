@@ -31,10 +31,12 @@ class Game {
 public:
     GameState              State;
     bool                   Keys[1024];
+    bool                   KeysProcessed[1024];   // prevent key repeat
     unsigned int           Width, Height;
     std::vector<GameLevel> Levels;
     unsigned int           Level;
-    std::vector<PowerUp>   PowerUps;  // active / falling power-ups
+    std::vector<PowerUp>   PowerUps;
+    unsigned int           Lives;                 // <-- NEW
 
     Game(unsigned int width, unsigned int height);
     ~Game();
@@ -52,4 +54,7 @@ public:
     void UpdatePowerUps(float dt);
     void ActivatePowerUp(PowerUp& powerUp);
     bool IsOtherPowerUpActive(std::vector<PowerUp>& powerUps, std::string type);
+
+private:
+    TextRenderer* m_Text;   // <-- NEW
 };

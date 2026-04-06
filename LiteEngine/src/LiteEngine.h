@@ -27,3 +27,5 @@
 
 #include "LiteEngine/Renderer/OrthographicCamera.h"
 // ------------------------------------
+
+#include "LiteEngine/Renderer/TextRenderer.h"

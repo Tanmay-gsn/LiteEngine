@@ -60,7 +60,9 @@ project "LiteEngine"
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.stb_image}"
+        "%{IncludeDir.stb_image}",
+		"%{prj.name}/vendor/freetype/include"
+		
     }
 
     links
@@ -69,7 +71,8 @@ project "LiteEngine"
         "Glad",
         "ImGui",
         "opengl32.lib",
-        "dwmapi.lib"
+        "dwmapi.lib",
+		"%{wks.location}/LiteEngine/vendor/freetype/lib/freetype"
     }
 
     linkoptions { "/ignore:4006" }
@@ -121,7 +124,8 @@ project "Sandbox"
         "LiteEngine/src",
         "LiteEngine/vendor",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.miniaudio}"
+        "%{IncludeDir.miniaudio}",
+		"LiteEngine/vendor/freetype/include"
 
     }
 
