@@ -55,10 +55,20 @@ void Game::Init()
     GameLevel two;   two.Load("assets/levels/two.lvl", this->Width, this->Height / 2);
     GameLevel three; three.Load("assets/levels/three.lvl", this->Width, this->Height / 2);
     GameLevel four;  four.Load("assets/levels/four.lvl", this->Width, this->Height / 2);
+    GameLevel five;  five.Load("assets/levels/five.lvl", this->Width, this->Height / 2);
+    GameLevel six;   six.Load("assets/levels/six.lvl", this->Width, this->Height / 2);
+    GameLevel seven; seven.Load("assets/levels/seven.lvl", this->Width, this->Height / 2);
+    GameLevel eight; eight.Load("assets/levels/eight.lvl", this->Width, this->Height / 2);
+
+    this->Levels.clear();
     this->Levels.push_back(one);
     this->Levels.push_back(two);
     this->Levels.push_back(three);
     this->Levels.push_back(four);
+    this->Levels.push_back(five);
+    this->Levels.push_back(six);
+    this->Levels.push_back(seven);
+    this->Levels.push_back(eight);
     this->Level = 0;
 
     glm::vec2 playerPos = glm::vec2(
@@ -115,6 +125,15 @@ void Game::ProcessInput(float dt)
 
     if (this->State == GAME_ACTIVE)
     {
+        if (this->Keys[LE_KEY_ESCAPE] && !this->KeysProcessed[LE_KEY_ESCAPE])
+        {
+            this->KeysProcessed[LE_KEY_ESCAPE] = true;
+            this->ResetLevel();
+            this->ResetPlayer();
+            this->Lives = 3;
+            this->State = GAME_MENU;
+        }
+
         float velocity = PLAYER_VELOCITY * dt;
         if (this->Keys[LE_KEY_A])
         {
@@ -280,7 +299,7 @@ void Game::SpawnPowerUps(GameObject& block)
             PowerUp("sticky", glm::vec3(1.0f, 0.5f, 1.0f), 20.0f,
                 block.Position, ResourceManager::GetTexture("powerup_sticky")));
 
-    if (ShouldSpawn(40))
+    if (ShouldSpawn(20))
         this->PowerUps.push_back(
             PowerUp("pass-through", glm::vec3(0.5f, 1.0f, 0.5f), 10.0f,
                 block.Position, ResourceManager::GetTexture("powerup_passthrough")));
@@ -515,6 +534,10 @@ void Game::ResetLevel()
     else if (this->Level == 1) this->Levels[1].Load("assets/levels/two.lvl", this->Width, this->Height / 2);
     else if (this->Level == 2) this->Levels[2].Load("assets/levels/three.lvl", this->Width, this->Height / 2);
     else if (this->Level == 3) this->Levels[3].Load("assets/levels/four.lvl", this->Width, this->Height / 2);
+    else if (this->Level == 4) this->Levels[4].Load("assets/levels/five.lvl", this->Width, this->Height / 2);
+    else if (this->Level == 5) this->Levels[5].Load("assets/levels/six.lvl", this->Width, this->Height / 2);
+    else if (this->Level == 6) this->Levels[6].Load("assets/levels/seven.lvl", this->Width, this->Height / 2);
+    else if (this->Level == 7) this->Levels[7].Load("assets/levels/eight.lvl", this->Width, this->Height / 2);
 }
 
 void Game::ResetPlayer()

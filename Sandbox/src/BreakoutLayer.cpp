@@ -20,27 +20,22 @@ void BreakoutLayer::OnUpdate(LiteEngine::Timestep ts)
 {
     float dt = ts;
 
-    // --- Feed key state into the game ------------------------------------
-
-    // Keys currently held
     m_Game.Keys[LE_KEY_A] = LiteEngine::Input::IsKeyPressed(LE_KEY_A);
     m_Game.Keys[LE_KEY_D] = LiteEngine::Input::IsKeyPressed(LE_KEY_D);
     m_Game.Keys[LE_KEY_W] = LiteEngine::Input::IsKeyPressed(LE_KEY_W);
     m_Game.Keys[LE_KEY_S] = LiteEngine::Input::IsKeyPressed(LE_KEY_S);
     m_Game.Keys[LE_KEY_SPACE] = LiteEngine::Input::IsKeyPressed(LE_KEY_SPACE);
     m_Game.Keys[LE_KEY_ENTER] = LiteEngine::Input::IsKeyPressed(LE_KEY_ENTER);
+    m_Game.Keys[LE_KEY_ESCAPE] = LiteEngine::Input::IsKeyPressed(LE_KEY_ESCAPE);
 
-    // Reset the "processed" flag as soon as the key is released
-    // so it can fire again on the next press.
     if (!m_Game.Keys[LE_KEY_ENTER]) m_Game.KeysProcessed[LE_KEY_ENTER] = false;
     if (!m_Game.Keys[LE_KEY_W])     m_Game.KeysProcessed[LE_KEY_W] = false;
     if (!m_Game.Keys[LE_KEY_S])     m_Game.KeysProcessed[LE_KEY_S] = false;
+    if (!m_Game.Keys[LE_KEY_ESCAPE]) m_Game.KeysProcessed[LE_KEY_ESCAPE] = false;
 
-    // --- Tick ----------------------------------------------------------
     m_Game.ProcessInput(dt);
     m_Game.Update(dt);
 
-    // --- Render --------------------------------------------------------
     LiteEngine::RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
     LiteEngine::RenderCommand::Clear();
 
