@@ -3,23 +3,15 @@
 #include "ResourceManager.h"
 #include "AudioManager.h"
 #include "LiteEngine/Core/KeyCodes.h"
-#include <cstdlib>   // rand()
+#include <cstdlib>
 
 GameObject* Player;
 BallObject* Ball;
-
-// -----------------------------------------------------------------------
-// Helpers
-// -----------------------------------------------------------------------
 
 static bool ShouldSpawn(unsigned int chance)
 {
     return (rand() % chance) == 0;
 }
-
-// -----------------------------------------------------------------------
-// Constructor / Destructor
-// -----------------------------------------------------------------------
 
 Game::Game(unsigned int width, unsigned int height)
     : State(GAME_MENU),
@@ -36,13 +28,8 @@ Game::~Game()
     delete m_Text;
 }
 
-// -----------------------------------------------------------------------
-// Init
-// -----------------------------------------------------------------------
-
 void Game::Init()
 {
-    // Textures
     ResourceManager::LoadTexture("assets/textures/background.jpg", "background");
     ResourceManager::LoadTexture("assets/textures/block.png", "block");
     ResourceManager::LoadTexture("assets/textures/block_solid.png", "block_solid");
@@ -55,7 +42,6 @@ void Game::Init()
     ResourceManager::LoadTexture("assets/textures/powerup_confuse.png", "powerup_confuse");
     ResourceManager::LoadTexture("assets/textures/powerup_chaos.png", "powerup_chaos");
 
-    // Audio
     AudioManager::Init();
     AudioManager::LoadSound("assets/audio/breakout.mp3", "music");
     AudioManager::LoadSound("assets/audio/bleep.mp3", "ball_paddle");
@@ -65,7 +51,6 @@ void Game::Init()
     AudioManager::SetVolume("music", 0.4f);
     AudioManager::PlaySound("music", true);
 
-    // Levels
     GameLevel one;   one.Load("assets/levels/one.lvl", this->Width, this->Height / 2);
     GameLevel two;   two.Load("assets/levels/two.lvl", this->Width, this->Height / 2);
     GameLevel three; three.Load("assets/levels/three.lvl", this->Width, this->Height / 2);
@@ -76,14 +61,12 @@ void Game::Init()
     this->Levels.push_back(four);
     this->Level = 0;
 
-    // Player
     glm::vec2 playerPos = glm::vec2(
         this->Width / 2.0f - PLAYER_SIZE.x / 2.0f,
         this->Height - PLAYER_SIZE.y
     );
     Player = new GameObject(playerPos, PLAYER_SIZE, ResourceManager::GetTexture("paddle"));
 
-    // Ball
     glm::vec2 ballPos = playerPos + glm::vec2(
         PLAYER_SIZE.x / 2.0f - BALL_RADIUS,
         -BALL_RADIUS * 2.0f
@@ -91,18 +74,12 @@ void Game::Init()
     Ball = new BallObject(ballPos, BALL_RADIUS, INITIAL_BALL_VELOCITY,
         ResourceManager::GetTexture("ball"));
 
-    // Text renderer
     m_Text = new TextRenderer(this->Width, this->Height);
     m_Text->Load("assets/fonts/ocraext.ttf", 24);
 }
 
-// -----------------------------------------------------------------------
-// ProcessInput
-// -----------------------------------------------------------------------
-
 void Game::ProcessInput(float dt)
 {
-    // Menu state
     if (this->State == GAME_MENU)
     {
         if (this->Keys[LE_KEY_ENTER] && !this->KeysProcessed[LE_KEY_ENTER])
@@ -124,7 +101,6 @@ void Game::ProcessInput(float dt)
         }
     }
 
-    // Win state
     if (this->State == GAME_WIN)
     {
         if (this->Keys[LE_KEY_ENTER] && !this->KeysProcessed[LE_KEY_ENTER])
@@ -137,7 +113,6 @@ void Game::ProcessInput(float dt)
         }
     }
 
-    // Active gameplay
     if (this->State == GAME_ACTIVE)
     {
         float velocity = PLAYER_VELOCITY * dt;
@@ -163,10 +138,6 @@ void Game::ProcessInput(float dt)
             Ball->Stuck = false;
     }
 }
-
-// -----------------------------------------------------------------------
-// Collision helpers
-// -----------------------------------------------------------------------
 
 Direction VectorDirection(glm::vec2 target)
 {
@@ -217,10 +188,6 @@ Collision CheckCollision(BallObject& one, GameObject& two)
         return std::make_tuple(false, UP, glm::vec2(0.0f, 0.0f));
 }
 
-// -----------------------------------------------------------------------
-// DoCollisions
-// -----------------------------------------------------------------------
-
 void Game::DoCollisions()
 {
     for (GameObject& box : this->Levels[this->Level].Bricks)
@@ -268,7 +235,6 @@ void Game::DoCollisions()
         }
     }
 
-    // Ball vs paddle
     Collision result = CheckCollision(*Ball, *Player);
     if (!Ball->Stuck && std::get<0>(result))
     {
@@ -284,7 +250,6 @@ void Game::DoCollisions()
         AudioManager::PlaySound("ball_paddle");
     }
 
-    // Power-up pickups
     for (PowerUp& powerUp : this->PowerUps)
     {
         if (!powerUp.Destroyed)
@@ -303,30 +268,26 @@ void Game::DoCollisions()
     }
 }
 
-// -----------------------------------------------------------------------
-// SpawnPowerUps
-// -----------------------------------------------------------------------
-
 void Game::SpawnPowerUps(GameObject& block)
 {
-    if (ShouldSpawn(75))
+    if (ShouldSpawn(40))
         this->PowerUps.push_back(
-            PowerUp("speed", glm::vec3(0.5f, 0.5f, 1.0f), 0.0f,
+            PowerUp("speed", glm::vec3(0.5f, 0.5f, 1.0f), 10.0f,
                 block.Position, ResourceManager::GetTexture("powerup_speed")));
 
-    if (ShouldSpawn(75))
+    if (ShouldSpawn(40))
         this->PowerUps.push_back(
             PowerUp("sticky", glm::vec3(1.0f, 0.5f, 1.0f), 20.0f,
                 block.Position, ResourceManager::GetTexture("powerup_sticky")));
 
-    if (ShouldSpawn(75))
+    if (ShouldSpawn(40))
         this->PowerUps.push_back(
             PowerUp("pass-through", glm::vec3(0.5f, 1.0f, 0.5f), 10.0f,
                 block.Position, ResourceManager::GetTexture("powerup_passthrough")));
 
-    if (ShouldSpawn(75))
+    if (ShouldSpawn(40))
         this->PowerUps.push_back(
-            PowerUp("pad-size-increase", glm::vec3(1.0f, 0.6f, 0.4f), 0.0f,
+            PowerUp("pad-size-increase", glm::vec3(1.0f, 0.6f, 0.4f), 10.0f,
                 block.Position, ResourceManager::GetTexture("powerup_increase")));
 
     if (ShouldSpawn(15))
@@ -339,10 +300,6 @@ void Game::SpawnPowerUps(GameObject& block)
             PowerUp("chaos", glm::vec3(0.9f, 0.25f, 0.25f), 15.0f,
                 block.Position, ResourceManager::GetTexture("powerup_chaos")));
 }
-
-// -----------------------------------------------------------------------
-// ActivatePowerUp
-// -----------------------------------------------------------------------
 
 void Game::ActivatePowerUp(PowerUp& powerUp)
 {
@@ -379,10 +336,6 @@ void Game::ActivatePowerUp(PowerUp& powerUp)
     }
 }
 
-// -----------------------------------------------------------------------
-// IsOtherPowerUpActive
-// -----------------------------------------------------------------------
-
 bool Game::IsOtherPowerUpActive(std::vector<PowerUp>& powerUps, std::string type)
 {
     for (const PowerUp& p : powerUps)
@@ -390,10 +343,6 @@ bool Game::IsOtherPowerUpActive(std::vector<PowerUp>& powerUps, std::string type
             return true;
     return false;
 }
-
-// -----------------------------------------------------------------------
-// UpdatePowerUps
-// -----------------------------------------------------------------------
 
 void Game::UpdatePowerUps(float dt)
 {
@@ -425,6 +374,16 @@ void Game::UpdatePowerUps(float dt)
                         Ball->Color = glm::vec3(1.0f);
                     }
                 }
+                else if (powerUp.Type == "speed")
+                {
+                    if (!IsOtherPowerUpActive(this->PowerUps, "speed"))
+                        Ball->Velocity /= 1.2f;
+                }
+                else if (powerUp.Type == "pad-size-increase")
+                {
+                    if (!IsOtherPowerUpActive(this->PowerUps, "pad-size-increase"))
+                        Player->Size.x -= 50.0f;
+                }
                 else if (powerUp.Type == "confuse")
                 {
                     if (!IsOtherPowerUpActive(this->PowerUps, "confuse"))
@@ -449,17 +408,12 @@ void Game::UpdatePowerUps(float dt)
     );
 }
 
-// -----------------------------------------------------------------------
-// Update
-// -----------------------------------------------------------------------
-
 void Game::Update(float dt)
 {
     Ball->Move(dt, this->Width);
     this->DoCollisions();
     this->UpdatePowerUps(dt);
 
-    // Ball fell below screen
     if (Ball->Position.y >= this->Height)
     {
         if (--this->Lives == 0)
@@ -471,7 +425,6 @@ void Game::Update(float dt)
         this->ResetPlayer();
     }
 
-    // Win condition
     if (this->State == GAME_ACTIVE && this->Levels[this->Level].IsCompleted())
     {
         this->ResetLevel();
@@ -480,13 +433,8 @@ void Game::Update(float dt)
     }
 }
 
-// -----------------------------------------------------------------------
-// Render
-// -----------------------------------------------------------------------
-
 void Game::Render()
 {
-    // Background always drawn
     LiteEngine::Renderer2D::DrawQuad(
         { this->Width / 2.0f, this->Height / 2.0f, 0.0f },
         { (float)this->Width, (float)this->Height },
@@ -504,7 +452,6 @@ void Game::Render()
                 powerUp.Draw();
     }
 
-    // HUD during gameplay
     if (this->State == GAME_ACTIVE)
     {
         m_Text->RenderText(
@@ -519,7 +466,6 @@ void Game::Render()
         );
     }
 
-    // Menu screen
     if (this->State == GAME_MENU)
     {
         m_Text->RenderText(
@@ -544,7 +490,6 @@ void Game::Render()
         );
     }
 
-    // Win screen
     if (this->State == GAME_WIN)
     {
         m_Text->RenderText(
@@ -563,10 +508,6 @@ void Game::Render()
         );
     }
 }
-
-// -----------------------------------------------------------------------
-// ResetLevel / ResetPlayer
-// -----------------------------------------------------------------------
 
 void Game::ResetLevel()
 {
