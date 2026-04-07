@@ -30,6 +30,7 @@ Game::~Game()
 
 void Game::Init()
 {
+    ResourceManager::LoadTexture("assets/textures/menu_background.jpg", "menu_background");
     ResourceManager::LoadTexture("assets/textures/background.jpg", "background");
     ResourceManager::LoadTexture("assets/textures/block.png", "block");
     ResourceManager::LoadTexture("assets/textures/block_solid.png", "block_solid");
@@ -454,10 +455,12 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
+    std::string currentBackground = (this->State == GAME_MENU) ? "menu_background" : "background";
+
     LiteEngine::Renderer2D::DrawQuad(
         { this->Width / 2.0f, this->Height / 2.0f, 0.0f },
         { (float)this->Width, (float)this->Height },
-        ResourceManager::GetTexture("background")
+        ResourceManager::GetTexture(currentBackground)
     );
 
     if (this->State == GAME_ACTIVE || this->State == GAME_WIN)
@@ -527,7 +530,6 @@ void Game::Render()
         );
     }
 }
-
 void Game::ResetLevel()
 {
     if (this->Level == 0) this->Levels[0].Load("assets/levels/one.lvl", this->Width, this->Height / 2);
