@@ -18,6 +18,7 @@ void GameObject::Draw()
     LiteEngine::Renderer2D::DrawQuad(
         { Position.x + Size.x / 2.0f, Position.y + Size.y / 2.0f, 0.0f },
         { Size.x, Size.y },
-        Sprite
+        Sprite,
+        glm::vec4(Color, 1.0f)
     );
 }
