@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="SandBox/assets/textures/LE_logo.png" alt="LiteEngine Logo" width="300"/>
+  <img src="Sandbox/assets/textures/LE_logo.png" alt="LiteEngine Logo" width="300"/>
 
   <h1>LiteEngine</h1>
-  <p><em>A custom, data-driven 2D game engine built in C++, optimized for low-latency event routing and high-throughput rendering.</em></p>
+  <p><em>A custom modular 2D game engine built in C++ featuring OpenGL-based rendering, event-driven architecture, layer management, and developer tooling.</em></p>
 </div>
 
 ---
