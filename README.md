@@ -13,7 +13,7 @@ To rigorously validate the engine's core subsystems, a fully playable "Breakout"
 
 ![Breakout Gameplay Demo](Sandbox/assets/working_demo/Gameplay_ss.png)
 
-🎥 **[Click here to watch the Gameplay Showcase Video](Sandbox/assets/working_demo/Gameplay_footage.mp4)**
+🎥 **[Click here to watch the Gameplay Showcase Video](Sandbox/assets/working_demo/Gameplay_Footage.mp4)**
 ---
 
 ##  Architecture
