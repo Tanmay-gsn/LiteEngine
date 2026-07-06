@@ -1,6 +1,5 @@
-<<<<<<< HEAD
 <div align="center">
-  <img src="assets/logo.png" alt="LiteEngine Logo" width="300"/>
+  <img src="SandBox/assets/textures/LE_Logo.png" alt="LiteEngine Logo" width="300"/>
 
   <h1>LiteEngine</h1>
   <p><em>A custom, data-driven 2D game engine built in C++, optimized for low-latency event routing and high-throughput rendering.</em></p>
@@ -12,27 +11,15 @@
 
 To rigorously validate the engine's core subsystems, a fully playable "Breakout" clone is integrated natively within the Sandbox project.
 
-![Breakout Gameplay Demo](assets/demo_screenshot.png)
+![Breakout Gameplay Demo](Sandbox/assets/working_demo/Gameplay_ss.png)
 
-🎥 **[Click here to watch the full Engine & Gameplay Showcase Video](https://youtube.com/your-video-link-here)**
-
+🎥 **[Click here to watch the Gameplay Showcase Video](Sandbox/assets/working_demo/Gameplay_footage.mp4)**
 ---
 
 ## 🏗️ Architecture
 
 LiteEngine is designed with a modular, decoupled architecture, allowing the core engine to handle windowing, input, rendering, and UI — so you can focus purely on game logic.
 
-```mermaid
-graph TD
-    A[Hardware / OS Inputs] -->|GLFW Interrupts| B(Event Dispatcher)
-    B -->|Blocking Routing| C{LayerStack}
-    C -->|Bottom Layer| D[Sandbox App / Breakout]
-    C -->|Top Layer| E[ImGui UI Panel]
-    D -->|Request Texture/Shader| F[(Resource Manager)]
-    D -->|Submit Draw Calls| G[Renderer2D API]
-    G -->|Agnostic Commands| H[OpenGL Pipeline]
-    H -->|glDrawElements| I[GPU Memory]
-```
 
 ### Core Subsystems
 
