@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="SandBox/assets/textures/LE_Logo.png" alt="LiteEngine Logo" width="300"/>
+  <img src="SandBox/assets/textures/LE_logo.png" alt="LiteEngine Logo" width="300"/>
 
   <h1>LiteEngine</h1>
   <p><em>A custom, data-driven 2D game engine built in C++, optimized for low-latency event routing and high-throughput rendering.</em></p>
@@ -7,7 +7,7 @@
 
 ---
 
-## 🎮 Engine Demo: Breakout
+##  Engine Demo: Breakout
 
 To rigorously validate the engine's core subsystems, a fully playable "Breakout" clone is integrated natively within the Sandbox project.
 
@@ -16,7 +16,7 @@ To rigorously validate the engine's core subsystems, a fully playable "Breakout"
 🎥 **[Click here to watch the Gameplay Showcase Video](Sandbox/assets/working_demo/Gameplay_footage.mp4)**
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 LiteEngine is designed with a modular, decoupled architecture, allowing the core engine to handle windowing, input, rendering, and UI — so you can focus purely on game logic.
 
@@ -31,7 +31,7 @@ LiteEngine is designed with a modular, decoupled architecture, allowing the core
 
 ---
 
-## 🚀 Performance & Metrics
+##  Performance & Metrics
 
 LiteEngine is architected for low overhead and continuous high-throughput execution. To validate the engine, strict stress testing was performed simulating a massive grid of 750+ active entities.
 
@@ -43,7 +43,7 @@ LiteEngine is architected for low overhead and continuous high-throughput execut
 
 ---
 
-## 📂 Repository Structure
+##  Repository Structure
 
 ```
 LiteEngine/
@@ -64,7 +64,7 @@ LiteEngine/
 
 ---
 
-## 🛠️ Prerequisites
+##  Prerequisites
 
 Only **Windows 10/11** is currently supported. Ensure you have the following installed:
 
@@ -75,7 +75,7 @@ Only **Windows 10/11** is currently supported. Ensure you have the following ins
 
 ---
 
-## ⚙️ Building the Project
+##  Building the Project
 
 ### Step 1 — Clone the repository
 
@@ -114,7 +114,7 @@ GenerateProjects.bat
 
 ---
 
-## 📦 Dependencies
+##  Dependencies
 
 All dependencies are vendored inside `LiteEngine/vendor/` and are built as part of the solution automatically.
 
@@ -128,7 +128,7 @@ All dependencies are vendored inside `LiteEngine/vendor/` and are built as part 
 
 ---
 
-## ⚠️ Troubleshooting
+##  Troubleshooting
 
 - **Submodule folders are empty (`imgui` or `spdlog`)** — Run `git submodule update --init --recursive`.
 - **`LiteEngine.sln` not found** — The solution file is generated locally. Run `GenerateProjects.bat` first.
