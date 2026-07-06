@@ -305,7 +305,7 @@ void Game::SpawnPowerUps(GameObject& block)
             PowerUp("pass-through", glm::vec3(0.5f, 1.0f, 0.5f), 10.0f,
                 block.Position, ResourceManager::GetTexture("powerup_passthrough")));
 
-    if (ShouldSpawn(40))
+    if (ShouldSpawn(400))
         this->PowerUps.push_back(
             PowerUp("pad-size-increase", glm::vec3(1.0f, 0.6f, 0.4f), 10.0f,
                 block.Position, ResourceManager::GetTexture("powerup_increase")));
