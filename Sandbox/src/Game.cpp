@@ -26,6 +26,9 @@ Game::~Game()
 {
     AudioManager::Shutdown();
     delete m_Text;
+    delete Player;
+    delete Ball;
+    delete m_Text;
 }
 
 void Game::Init()

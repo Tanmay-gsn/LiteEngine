@@ -98,7 +98,7 @@ namespace LiteEngine {
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
 	{
 		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetMat4("u_ViewProjection", s_Data->CameraViewProjection);
+		//s_Data->TextureShader->SetMat4("u_ViewProjection", s_Data->CameraViewProjection);
 		s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(1.0f));
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
@@ -118,7 +118,7 @@ namespace LiteEngine {
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, const glm::vec4& color)
 	{
 		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetMat4("u_ViewProjection", s_Data->CameraViewProjection);
+		//s_Data->TextureShader->SetMat4("u_ViewProjection", s_Data->CameraViewProjection);
 		s_Data->TextureShader->SetFloat4("u_Color", color);
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)

@@ -20,13 +20,13 @@ namespace LiteEngine {
 		auto it = m_Layers.begin() + m_LayerInsertIndex;
 		auto newIt = m_Layers.emplace(it, layer);
 		m_LayerInsertIndex = static_cast<size_t>(std::distance(m_Layers.begin(), newIt));
-		layer->OnAttach();
+		//layer->OnAttach();
 	}
 
 	void LayerStack::PushOverlay(Layer* overlay)
 	{
 		m_Layers.emplace_back(overlay);
-		overlay->OnAttach();
+		//overlay->OnAttach();
 	}
 
 	void LayerStack::PopLayer(Layer* layer)

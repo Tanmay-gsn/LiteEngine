@@ -134,4 +134,3 @@ All dependencies are vendored inside `LiteEngine/vendor/` and are built as part 
 - **`LiteEngine.sln` not found** — The solution file is generated locally. Run `GenerateProjects.bat` first.
 - **Build errors about missing headers** — Ensure you are building the entire solution (`Ctrl+Shift+B`), not just a single project. The Core LiteEngine library must compile before Sandbox.
 - **LNK4006 linker warnings** — These are expected and harmless, regarding `opengl32.lib` and `dwmapi.lib`. They are suppressed via `/ignore:4006`.
-=======
