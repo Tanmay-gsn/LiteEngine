@@ -7,6 +7,9 @@
 #include "LiteEngine/Events/Event.h"
 #include "LiteEngine/Core/Log.h"
 #include "spdlog/fmt/ostr.h"
+#include "test1.h"
+#include "game_1.h"
+
 //#include "Sandbox2D.h"
 #include "BreakoutLayer.h"
 // Force discrete GPU
@@ -217,7 +220,13 @@ class Sandbox : public LiteEngine::Application {
 public:
 	Sandbox()
 	{
-		PushLayer(new BreakoutLayer(1280,720));
+		/*
+			Put your game layer below and comment out others :)
+		*/
+
+		// PushLayer(new BreakoutLayer(1280,720));
+		// PushLayer(new test1());
+		// PushLayer(new game_1());
 	}
 
 	~Sandbox() {}
