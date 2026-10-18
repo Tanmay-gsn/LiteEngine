@@ -5,8 +5,8 @@
 #include "LiteEngine/Core/KeyCodes.h"
 #include <cstdlib>
 
-GameObject* Player;
-BallObject* Ball;
+GameObject* Player = nullptr;
+BallObject* Ball = nullptr;
 
 static bool ShouldSpawn(unsigned int chance)
 {
@@ -26,11 +26,12 @@ Game::~Game()
 {
     AudioManager::Shutdown();
     delete m_Text;
+    m_Text = nullptr;
     delete Player;
+    Player = nullptr;
     delete Ball;
-    delete m_Text;
+    Ball = nullptr;
 }
-
 void Game::Init()
 {
     ResourceManager::LoadTexture("assets/textures/menu_background.jpg", "menu_background");
@@ -476,6 +477,9 @@ void Game::Render()
             if (!powerUp.Destroyed)
                 powerUp.Draw();
     }
+
+    // Flush all batched 2D sprites to the screen BEFORE drawing text on top!
+    LiteEngine::Renderer2D::EndScene();
 
     if (this->State == GAME_ACTIVE)
     {

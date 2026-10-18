@@ -39,9 +39,9 @@ void BreakoutLayer::OnUpdate(LiteEngine::Timestep ts)
     LiteEngine::RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
     LiteEngine::RenderCommand::Clear();
 
+    LiteEngine::Renderer2D::ResetStats();
     LiteEngine::Renderer2D::BeginScene(m_Camera);
-    m_Game.Render();
-    LiteEngine::Renderer2D::EndScene();
+    m_Game.Render(); 
 }
 
 void BreakoutLayer::OnEvent(LiteEngine::Event& e) {}
