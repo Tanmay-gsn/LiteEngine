@@ -50,8 +50,8 @@ namespace LiteEngine {
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
-		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(window, false);
+		// Setup Platform/Renderer bindings (true installs GLFW callbacks chained with WindowsWindow callbacks)
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
@@ -60,6 +60,22 @@ namespace LiteEngine {
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
+	}
+
+	void ImGuiLayer::OnEvent(Event& e)
+	{
+		if (m_BlockEvents)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			if (e.IsInCategory(EventCategoryMouse) && io.WantCaptureMouse)
+			{
+				e.SetHandled(true);
+			}
+			if (e.IsInCategory(EventCategoryKeyboard) && io.WantCaptureKeyboard)
+			{
+				e.SetHandled(true);
+			}
+		}
 	}
 
 	void ImGuiLayer::Begin()
@@ -93,8 +109,6 @@ namespace LiteEngine {
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
 	}
 
 }

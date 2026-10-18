@@ -1,38 +1,25 @@
-<<<<<<< HEAD
 <div align="center">
-  <img src="assets/logo.png" alt="LiteEngine Logo" width="300"/>
+  <img src="Sandbox/assets/textures/LE_logo.png" alt="LiteEngine Logo" width="300"/>
 
   <h1>LiteEngine</h1>
-  <p><em>A custom, data-driven 2D game engine built in C++, optimized for low-latency event routing and high-throughput rendering.</em></p>
+  <p><em>A custom modular 2D game engine built in C++ featuring OpenGL-based rendering, event-driven architecture, layer management, and developer tooling.</em></p>
 </div>
 
 ---
 
-## 🎮 Engine Demo: Breakout
+##  Engine Demo: Breakout
 
 To rigorously validate the engine's core subsystems, a fully playable "Breakout" clone is integrated natively within the Sandbox project.
 
-![Breakout Gameplay Demo](assets/demo_screenshot.png)
+![Breakout Gameplay Demo](Sandbox/assets/working_demo/Gameplay_ss.png)
 
-🎥 **[Click here to watch the full Engine & Gameplay Showcase Video](https://youtube.com/your-video-link-here)**
-
+🎥 **[Click here to watch the Gameplay Showcase Video](Sandbox/assets/working_demo/Gameplay_Footage.mp4)**
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 LiteEngine is designed with a modular, decoupled architecture, allowing the core engine to handle windowing, input, rendering, and UI — so you can focus purely on game logic.
 
-```mermaid
-graph TD
-    A[Hardware / OS Inputs] -->|GLFW Interrupts| B(Event Dispatcher)
-    B -->|Blocking Routing| C{LayerStack}
-    C -->|Bottom Layer| D[Sandbox App / Breakout]
-    C -->|Top Layer| E[ImGui UI Panel]
-    D -->|Request Texture/Shader| F[(Resource Manager)]
-    D -->|Submit Draw Calls| G[Renderer2D API]
-    G -->|Agnostic Commands| H[OpenGL Pipeline]
-    H -->|glDrawElements| I[GPU Memory]
-```
 
 ### Core Subsystems
 
@@ -44,7 +31,7 @@ graph TD
 
 ---
 
-## 🚀 Performance & Metrics
+##  Performance & Metrics
 
 LiteEngine is architected for low overhead and continuous high-throughput execution. To validate the engine, strict stress testing was performed simulating a massive grid of 750+ active entities.
 
@@ -56,7 +43,7 @@ LiteEngine is architected for low overhead and continuous high-throughput execut
 
 ---
 
-## 📂 Repository Structure
+##  Repository Structure
 
 ```
 LiteEngine/
@@ -77,7 +64,7 @@ LiteEngine/
 
 ---
 
-## 🛠️ Prerequisites
+##  Prerequisites
 
 Only **Windows 10/11** is currently supported. Ensure you have the following installed:
 
@@ -88,7 +75,7 @@ Only **Windows 10/11** is currently supported. Ensure you have the following ins
 
 ---
 
-## ⚙️ Building the Project
+##  Building the Project
 
 ### Step 1 — Clone the repository
 
@@ -127,7 +114,7 @@ GenerateProjects.bat
 
 ---
 
-## 📦 Dependencies
+##  Dependencies
 
 All dependencies are vendored inside `LiteEngine/vendor/` and are built as part of the solution automatically.
 
@@ -141,10 +128,9 @@ All dependencies are vendored inside `LiteEngine/vendor/` and are built as part 
 
 ---
 
-## ⚠️ Troubleshooting
+##  Troubleshooting
 
 - **Submodule folders are empty (`imgui` or `spdlog`)** — Run `git submodule update --init --recursive`.
 - **`LiteEngine.sln` not found** — The solution file is generated locally. Run `GenerateProjects.bat` first.
 - **Build errors about missing headers** — Ensure you are building the entire solution (`Ctrl+Shift+B`), not just a single project. The Core LiteEngine library must compile before Sandbox.
 - **LNK4006 linker warnings** — These are expected and harmless, regarding `opengl32.lib` and `dwmapi.lib`. They are suppressed via `/ignore:4006`.
-=======
