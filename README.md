@@ -11,7 +11,7 @@
 
 To rigorously validate the engine's core subsystems, a fully playable "Breakout" clone is integrated natively within the Sandbox project.
 
-![Breakout Gameplay Demo](Sandbox/assets/working_demo/Gameplay_ss.png)
+![Breakout Gameplay Demo](demo/Gameplay_ss.png)
 
 🎥 **[Click here to watch the Gameplay Showcase Video](Sandbox/assets/working_demo/Gameplay_Footage.mp4)**
 ---
