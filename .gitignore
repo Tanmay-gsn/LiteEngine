@@ -9,6 +9,7 @@
 # Build output
 bin/
 bin-int/
+Makefile
 
 desktop.ini
 *.txt

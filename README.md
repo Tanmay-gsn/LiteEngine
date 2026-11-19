@@ -66,7 +66,7 @@ LiteEngine/
 
 ##  Prerequisites
 
-Only **Windows 10/11** is currently supported. Ensure you have the following installed:
+Only **Windows 10/11 & MacOS** are currently supported. Ensure you have the following installed:
 
 - **Visual Studio 2022** (or 2019) with the *Desktop development with C++* workload.
 - **Git** (required to clone and initialize submodules).
@@ -92,17 +92,18 @@ cd LiteEngine
 
 Run the provided batch script from the root of the repository to target Visual Studio 2022:
 
-```dos
-GenerateProjects.bat
+```bash
+GenerateProjects.sh
 ```
 
 ### Step 3 — Compile and Run
 
-1. Open `LiteEngine.sln` in Visual Studio.
-2. In the Solution Explorer, right-click the **Sandbox** project and select **Set as Startup Project**.
-3. Select your build configuration from the top toolbar (**Debug**, **Release**, or **Dist**).
-4. Press **Ctrl+Shift+B** to compile.
-5. Press **F5** to launch the engine and play the Breakout demo.
+1. To change your build configuration, run `make config=release` or `make config=dist` respectively for **release** or **dist**.
+2. Launch the engine by running 
+```bash
+cd Sandbox && ../bin/Debug-macosx-AARCH64/Sandbox/Sandbox
+```
+replacing `AARCH64` with `x86_64` for Intel Macs.
 
 ### Build Configurations
 

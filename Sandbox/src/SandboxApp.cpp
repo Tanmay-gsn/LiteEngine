@@ -10,10 +10,13 @@
 //#include "Sandbox2D.h"
 #include "BreakoutLayer.h"
 // Force discrete GPU
+
+ #ifdef _WIN32
 extern "C" {
 	__declspec(dllexport) unsigned long NvOptimusEnablement = 1;
 	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
+ #endif
 
 class ExampleLayer : public LiteEngine::Layer {
 public:
