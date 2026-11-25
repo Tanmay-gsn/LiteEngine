@@ -1,60 +1,17 @@
 #pragma once
 #include "LiteEngine.h"
-#include "ResourceManager.h"
-#include "GameLevel.h"
-#include "GameObject.h"
-#include "BallObject.h"
-#include "PowerUp.h"
-#include "AudioManager.h"
 
-const glm::vec2 PLAYER_SIZE(100.0f, 20.0f);
-const float     PLAYER_VELOCITY(500.0f);
-const glm::vec2 INITIAL_BALL_VELOCITY(100.0f, -350.0f);
-const float     BALL_RADIUS = 12.5f;
-
-enum Direction {
-    UP,
-    RIGHT,
-    DOWN,
-    LEFT
-};
-
-typedef std::tuple<bool, Direction, glm::vec2> Collision;
-
-enum GameState {
-    GAME_ACTIVE,
-    GAME_MENU,
-    GAME_WIN
-};
-
-class Game {
+class Game : public LiteEngine::Layer
+{
 public:
-    GameState              State;
-    bool                   Keys[1024];
-    bool                   KeysProcessed[1024];   // prevent key repeat
-    unsigned int           Width, Height;
-    std::vector<GameLevel> Levels;
-    unsigned int           Level;
-    std::vector<PowerUp>   PowerUps;
-    unsigned int           Lives;                 // <-- NEW
+	Game();
 
-    Game(unsigned int width, unsigned int height);
-    ~Game();
-
-    void Init();
-    void ProcessInput(float dt);
-    void Update(float dt);
-    void Render();
-    void DoCollisions();
-    void ResetLevel();
-    void ResetPlayer();
-
-    // Power-up helpers
-    void SpawnPowerUps(GameObject& block);
-    void UpdatePowerUps(float dt);
-    void ActivatePowerUp(PowerUp& powerUp);
-    bool IsOtherPowerUpActive(std::vector<PowerUp>& powerUps, std::string type);
+	void OnUpdate(LiteEngine::Timestep ts) override;
 
 private:
-    TextRenderer* m_Text;   // <-- NEW
+	LiteEngine::OrthographicCamera m_Camera;
+	glm::vec2 m_Position;
+	glm::vec2 m_Size;
+	glm::vec4 m_Color;
+	float m_Speed;
 };

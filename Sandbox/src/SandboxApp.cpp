@@ -7,8 +7,8 @@
 #include "LiteEngine/Events/Event.h"
 #include "LiteEngine/Core/Log.h"
 #include "spdlog/fmt/ostr.h"
-//#include "Sandbox2D.h"
-#include "BreakoutLayer.h"
+#include "game.h"
+//#include "BreakoutLayer.h"
 // Force discrete GPU
 extern "C" {
 	__declspec(dllexport) unsigned long NvOptimusEnablement = 1;
@@ -217,7 +217,7 @@ class Sandbox : public LiteEngine::Application {
 public:
 	Sandbox()
 	{
-		PushLayer(new BreakoutLayer(1280,720));
+		PushLayer(new Game());
 	}
 
 	~Sandbox() {}
