@@ -27,3 +27,11 @@ void Game::OnUpdate(LiteEngine::Timestep ts)
 	LiteEngine::Renderer2D::DrawQuad(m_Position, m_Size, m_Color);
 	LiteEngine::Renderer2D::EndScene();
 }
+
+/*
+	Tasks :
+    1) add movement using arrow keys
+	2) shift key to double movement speed
+	3) space bar to  change color
+	4) dont let the sqaure escpe the screen
+*/
